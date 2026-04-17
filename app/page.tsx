@@ -1,67 +1,88 @@
 "use client"
 
-import { useState } from "react"
-import { Wallet, Users, BarChart3, ArrowUpRight } from "lucide-react"
+import { useState, useEffect } from "react"
+import { createPublicClient, http, formatEther } from "viem"
+import { celo } from "viem/chains"
+
+const erc20Abi = [
+  {
+    name: "balanceOf",
+    type: "function",
+    stateMutability: "view",
+    inputs: [{ name: "account", type: "address" }],
+    outputs: [{ name: "balance", type: "uint256" }],
+  },
+] as const
 
 export default function Dashboard() {
-  const [balance] = useState<string>("125.432.120") // Valor estático para testar o visual
+  const [balance, setBalance] = useState<string>("Carregando...")
+
+  useEffect(() => {
+    // Trocando para um RPC mais robusto
+    const client = createPublicClient({
+      chain: celo,
+      transport: http("https://rpc.ankr.com/celo"),
+    })
+
+    async function getCeloData() {
+      try {
+        const data = await client.readContract({
+          address: "0x471EcE3750Da237f93B8E339c536989b8978a438",
+          abi: erc20Abi,
+          functionName: "balanceOf",
+          args: ["0xD533Ca0630fc6e7F9B172E9b04B3047aBeb2d235"],
+        })
+        
+        const formatted = new Intl.NumberFormat('en-US', { 
+          maximumFractionDigits: 0 
+        }).format(Number(formatEther(data as bigint)))
+        
+        setBalance(formatted)
+      } catch (error) {
+        console.error(error)
+        setBalance("Indisponível")
+      }
+    }
+    getCeloData()
+  }, [])
 
   return (
-    <div className="min-h-screen bg-[#123C13] text-white p-4 md:p-8 font-sans">
-      <header className="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
+    <div style={{ backgroundColor: '#123C13', minHeight: '100vh', color: 'white', padding: '20px', fontFamily: 'sans-serif' }}>
+      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
         <div>
-          <h1 className="text-2xl font-bold text-[#FCFF52]">Celo Governance Tracker</h1>
-          <p className="text-sm opacity-70">built for Ipê City</p>
+          <h1 style={{ color: '#FCFF52', margin: 0, fontSize: '24px' }}>Celo Governance</h1>
+          <p style={{ opacity: 0.7, margin: '5px 0 0 0' }}>Monitoramento em tempo real</p>
         </div>
-        <button 
-          onClick={() => window.ethereum?.request({ method: 'eth_requestAccounts' })}
-          className="bg-[#FCFF52] text-[#123C13] hover:bg-yellow-400 font-bold px-4 py-2 rounded-md flex items-center text-sm"
-        >
-          <Wallet className="mr-2 h-4 w-4" /> Conectar MiniPay
+        <button style={{ backgroundColor: '#FCFF52', color: '#123C13', border: 'none', padding: '10px 20px', borderRadius: '20px', fontWeight: 'bold', cursor: 'pointer' }}>
+          Conectar MiniPay
         </button>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Card de Saldo - HTML PURO */}
-        <div className="bg-[#FCFF52] rounded-lg p-6 text-[#123C13] lg:col-span-2 shadow-lg">
-          <div className="flex flex-row items-center justify-between pb-2">
-            <h3 className="text-lg font-medium">Celo Community Fund Balance</h3>
-            <BarChart3 className="h-5 w-5 opacity-70" />
+      <div style={{ display: 'grid', gap: '20px' }}>
+        {/* Card Principal */}
+        <div style={{ backgroundColor: '#FCFF52', color: '#123C13', padding: '30px', borderRadius: '16px' }}>
+          <h2 style={{ margin: 0, fontSize: '18px', opacity: 0.8 }}>Celo Community Fund</h2>
+          <div style={{ fontSize: '48px', fontWeight: 'bold', margin: '10px 0' }}>
+            {balance} <span style={{ fontSize: '20px' }}>CELO</span>
           </div>
-          <div className="text-5xl font-bold tracking-tighter mt-4">
-            {balance} <span className="text-2xl">CELO</span>
-          </div>
-          <p className="text-sm mt-4 font-semibold">Total disponível para propostas da comunidade</p>
+          <p style={{ margin: 0, fontWeight: '500' }}>Saldo atual do tesouro de governança</p>
         </div>
 
-        {/* Links Rápidos - HTML PURO */}
-        <div className="bg-[#1a4d1b] rounded-lg p-6 border border-[#2a5d2b] shadow-lg">
-          <div className="pb-4">
-            <h3 className="text-lg font-medium text-white">Recursos e Links</h3>
-          </div>
-          <div className="flex flex-col gap-3">
-            <a 
-              href="https://mondo.celo.org/governance" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="w-full justify-start border border-[#FCFF52] text-[#FCFF52] hover:bg-[#FCFF52] hover:text-[#123C13] font-bold px-4 py-2 rounded-md flex items-center"
-            >
-              Propostas Ativas <ArrowUpRight className="ml-2 h-4 w-4" />
-            </a>
-            <a 
-              href="https://explorer.celo.org/mainnet/validators" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="w-full justify-start border border-[#FCFF52] text-[#FCFF52] hover:bg-[#FCFF52] hover:text-[#123C13] font-bold px-4 py-2 rounded-md flex items-center"
-            >
-              Validadores <ArrowUpRight className="ml-2 h-4 w-4" />
-            </a>
-          </div>
+        {/* Links */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+          <a href="https://mondo.celo.org/governance" target="_blank" rel="noopener noreferrer" 
+             style={{ display: 'block', padding: '20px', border: '1px solid #FCFF52', borderRadius: '12px', color: '#FCFF52', textDecoration: 'none', textAlign: 'center', fontWeight: 'bold' }}>
+            Propostas Ativas ↗
+          </a>
+          <a href="https://explorer.celo.org/mainnet/validators" target="_blank" rel="noopener noreferrer"
+             style={{ display: 'block', padding: '20px', border: '1px solid #FCFF52', borderRadius: '12px', color: '#FCFF52', textDecoration: 'none', textAlign: 'center', fontWeight: 'bold' }}>
+            Validadores ↗
+          </a>
         </div>
       </div>
 
-      <footer className="mt-12 pt-8 border-t border-white/10 text-center opacity-50 text-sm">
-        <p>Built with MiniPay for the Celo Ecosystem • Ipê City</p>
+      <footer style={{ marginTop: '60px', textAlign: 'center', opacity: 0.5, fontSize: '12px', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '20px' }}>
+        Desenvolvido para o Ipê City • Built with MiniPay
       </footer>
     </div>
   )
