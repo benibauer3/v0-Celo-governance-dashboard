@@ -9,6 +9,11 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: 'Celo Governance Tracker',
   description: 'Real-time Web3 governance dashboard for Celo Community Fund. Track proposals, fund allocation, and governance metrics.',
+  export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
   generator: 'v0.app',
   icons: {
     icon: [
