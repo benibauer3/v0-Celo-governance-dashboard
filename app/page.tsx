@@ -1,5 +1,53 @@
 "use client"
+"use client"
 
+import { useState, useEffect } from "react"
+// Certifique-se de que esses imports estão assim:
+import { createPublicClient, http, formatEther } from "viem"
+import { celo } from "viem/chains"
+
+// ABI Mínima - Coloque fora do componente para não recriar na renderização
+const erc20Abi = [
+  {
+    name: "balanceOf",
+    type: "function",
+    stateMutability: "view",
+    inputs: [{ name: "account", type: "address" }],
+    outputs: [{ name: "balance", type: "uint256" }],
+  },
+] as const; // O 'as const' ajuda o TypeScript a não reclamar
+
+export default function Dashboard() {
+  const [balance, setBalance] = useState<string>("Carregando..."); // Começa com texto, não com 0
+  
+  useEffect(() => {
+    const client = createPublicClient({
+      chain: celo,
+      transport: http("https://forno.celo.org"),
+    })
+
+    async function getBalance() {
+      try {
+        const data = await client.readContract({
+          address: "0x471EcE3750Da237f93B8E339c536989b8978a438", // CELO Token
+          abi: erc20Abi,
+          functionName: "balanceOf",
+          args: ["0xD533Ca0630fc6e7F9B172E9b04B3047aBeb2d235"], // Community Fund
+        })
+        
+        const ethValue = formatEther(data as bigint)
+        // Formata para ficar bonito (ex: 12,500,000)
+        setBalance(new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(Number(ethValue)))
+      } catch (e) {
+        console.error(e)
+        setBalance("Erro ao carregar")
+      }
+    }
+
+    getBalance()
+  }, [])
+
+  // ... restante do seu retorno JSX
 import { useState, useEffect } from "react"
 import { createPublicClient, http, formatEther } from "viem"
 import { celo } from "viem/chains"
