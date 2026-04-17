@@ -13,24 +13,24 @@ interface ActionButton {
 
 const actions: ActionButton[] = [
   {
-    title: 'Explorar Validadores',
-    description: 'Veja os validadores ativos e suas métricas de performance na rede Celo',
+    title: 'Explore Validators',
+    description: 'View active validators and their performance metrics on the Celo network',
     icon: <Users className="w-6 h-6" />,
-    href: 'https://mondo.celo.org/staking',
+    href: 'https://explorer.celo.org/mainnet/validators',
     gradient: 'from-[#35D07F] to-[#1D8E54]',
     iconBg: 'bg-[#35D07F]/20 text-[#1D8E54]',
   },
   {
     title: 'Top Delegates',
-    description: 'Descubra os principais delegados de governança e seu poder de voto',
+    description: 'Discover top governance delegates and their voting power',
     icon: <Award className="w-6 h-6" />,
-    href: 'https://mondo.celo.org/delegate',
+    href: 'https://celo.tax',
     gradient: 'from-[#FBCC5C] to-[#E5A229]',
     iconBg: 'bg-[#FBCC5C]/20 text-[#E5A229]',
   },
   {
-    title: 'Votar em Propostas',
-    description: 'Participe da governança votando em propostas ativas',
+    title: 'Vote on Proposals',
+    description: 'Participate in governance by voting on active proposals',
     icon: <Vote className="w-6 h-6" />,
     href: 'https://mondo.celo.org/governance',
     gradient: 'from-blue-500 to-blue-600',
@@ -38,7 +38,7 @@ const actions: ActionButton[] = [
   },
   {
     title: 'Analytics',
-    description: 'Analise dados detalhados do Community Treasury',
+    description: 'Analyze detailed Community Treasury data',
     icon: <BarChart3 className="w-6 h-6" />,
     href: 'https://dune.com/superchain_eco/celo-community-treasury',
     gradient: 'from-purple-500 to-purple-600',
@@ -50,8 +50,8 @@ export function ActionBar() {
   return (
     <div className="w-full">
       <div className="mb-6">
-        <h3 className="text-lg font-bold text-[#1E2336]">Ações Rápidas</h3>
-        <p className="text-slate-600 text-sm">Sem necessidade de login</p>
+        <h3 className="text-lg font-bold text-[#1E2336]">Quick Actions</h3>
+        <p className="text-slate-600 text-sm">No login required</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

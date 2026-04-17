@@ -6,7 +6,7 @@ import { ExternalLink } from 'lucide-react'
 
 export const metadata = {
   title: 'Celo Governance Tracker',
-  description: 'Dashboard de governança Web3 em tempo real para o Celo Community Fund. Acompanhe propostas, alocação de fundos e métricas de governança.',
+  description: 'Real-time Web3 governance dashboard for Celo Community Fund. Track proposals, fund allocation and governance metrics.',
 }
 
 export default function Home() {
@@ -94,7 +94,7 @@ export default function Home() {
               </div>
               <div>
                 <p className="text-sm font-semibold text-[#1E2336]">Celo Governance Tracker</p>
-                <p className="text-xs text-slate-500">Prosperidade para todos</p>
+                <p className="text-xs text-slate-500">Prosperity for all</p>
               </div>
             </div>
             <div className="flex items-center gap-6 text-sm text-slate-500">
@@ -114,7 +114,7 @@ export default function Home() {
           </div>
           <div className="mt-6 pt-6 border-t border-slate-100 text-center">
             <p className="text-xs text-slate-400">
-              Dados obtidos diretamente da blockchain Celo. Atualizações em tempo real.
+              Data fetched directly from the Celo blockchain. Real-time updates.
             </p>
           </div>
         </footer>

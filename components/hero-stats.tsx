@@ -26,7 +26,7 @@ function formatCelo(value: number): string {
   if (value >= 1000) {
     return `${(value / 1000).toFixed(0)}K`
   }
-  return value.toLocaleString('pt-BR', { maximumFractionDigits: 2 })
+  return value.toLocaleString('en-US', { maximumFractionDigits: 2 })
 }
 
 export function HeroStats() {
@@ -39,20 +39,20 @@ export function HeroStats() {
       try {
         setLoading(true)
         const response = await fetch('/api/celo-balance')
-        if (!response.ok) throw new Error('Falha ao buscar saldo')
+        if (!response.ok) throw new Error('Failed to fetch balance')
         const data = await response.json()
         setBalanceData(data)
         setError(null)
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Erro desconhecido')
-        // Dados de fallback baseados no CeloScan (~9.67M CELO)
+        setError(err instanceof Error ? err.message : 'Unknown error')
+        // Fallback data based on CeloScan (~9.67M CELO)
         setBalanceData({
           totalBalance: 9669179,
-          allocatedFunds: 6768425,
-          availableFunds: 2900754,
-          percentageAllocated: 70,
-          percentageAvailable: 30,
-          address: '0xD533Ca259b330c7A88f74E000a3FaEa2d63B7972',
+          allocatedFunds: 6284966,
+          availableFunds: 3384213,
+          percentageAllocated: 65,
+          percentageAvailable: 35,
+          address: '0xD533Ca0630fc6e7F9B172E9b04B3047aBeb2d235',
           demo: true,
         })
       } finally {
@@ -68,15 +68,15 @@ export function HeroStats() {
       <div className="w-full bg-gradient-to-br from-white to-slate-50 rounded-2xl border border-slate-200 p-8 shadow-sm">
         <div className="h-80 flex flex-col items-center justify-center text-slate-500">
           <Loader2 className="w-10 h-10 text-[#35D07F] animate-spin mb-4" />
-          <span className="text-sm">Conectando à blockchain Celo...</span>
+          <span className="text-sm">Connecting to Celo blockchain...</span>
         </div>
       </div>
     )
   }
 
   const chartData = [
-    { name: 'Alocado', value: balanceData.allocatedFunds, fill: CELO_GREEN },
-    { name: 'Disponível', value: balanceData.availableFunds, fill: CELO_GOLD },
+    { name: 'Allocated', value: balanceData.allocatedFunds, fill: CELO_GREEN },
+    { name: 'Available', value: balanceData.availableFunds, fill: CELO_GOLD },
   ]
 
   const celoPrice = 0.08 // Preço aproximado do CELO em USD
@@ -162,7 +162,7 @@ export function HeroStats() {
           <div className="bg-gradient-to-br from-[#1E2336] to-[#2D3348] rounded-xl p-6 text-white">
             <div className="flex items-center gap-2 mb-3">
               <TrendingUp className="w-4 h-4 text-[#35D07F]" />
-              <p className="text-slate-300 text-sm font-medium">Saldo Total</p>
+              <p className="text-slate-300 text-sm font-medium">Total Balance</p>
             </div>
             <p className="text-4xl font-bold mb-1">
               {formatCelo(balanceData.totalBalance)}
@@ -175,7 +175,7 @@ export function HeroStats() {
           {/* Allocation Bar */}
           <div className="bg-white rounded-xl p-5 border border-slate-200">
             <div className="flex justify-between items-center mb-3">
-              <p className="text-[#1E2336] font-semibold">Alocação do Fundo</p>
+              <p className="text-[#1E2336] font-semibold">Fund Allocation</p>
               <p className="text-sm font-bold text-[#35D07F]">{balanceData.percentageAllocated}%</p>
             </div>
             <div className="w-full bg-slate-100 rounded-full h-3.5 overflow-hidden">
@@ -190,11 +190,11 @@ export function HeroStats() {
             <div className="flex justify-between items-center mt-3 text-xs text-slate-500">
               <span className="flex items-center gap-1.5">
                 <span className="w-2.5 h-2.5 rounded-full bg-[#35D07F]" />
-                Alocado: {formatCelo(balanceData.allocatedFunds)} CELO
+                Allocated: {formatCelo(balanceData.allocatedFunds)} CELO
               </span>
               <span className="flex items-center gap-1.5">
                 <span className="w-2.5 h-2.5 rounded-full bg-[#FBCC5C]" />
-                Disponível: {formatCelo(balanceData.availableFunds)} CELO
+                Available: {formatCelo(balanceData.availableFunds)} CELO
               </span>
             </div>
           </div>
@@ -202,9 +202,9 @@ export function HeroStats() {
           {/* Network Status */}
           <div className="bg-white rounded-xl p-4 border border-slate-200 flex items-center justify-between">
             <div>
-              <p className="text-slate-500 text-xs font-medium uppercase tracking-wide mb-1">Status da Rede</p>
+              <p className="text-slate-500 text-xs font-medium uppercase tracking-wide mb-1">Network Status</p>
               <p className="text-[#1E2336] font-semibold">
-                {error || balanceData.demo ? 'Demo Mode' : 'Conectado'}
+                {error || balanceData.demo ? 'Demo Mode' : 'Connected'}
               </p>
             </div>
             <div className="flex items-center gap-2">

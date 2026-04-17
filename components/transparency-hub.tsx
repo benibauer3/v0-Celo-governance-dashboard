@@ -16,8 +16,8 @@ interface FundCategory {
 const fundCategories: FundCategory[] = [
   {
     icon: <BookOpen className="w-7 h-7" />,
-    title: 'Educação',
-    description: 'Programas de educação em blockchain e formação de desenvolvedores',
+    title: 'Education',
+    description: 'Blockchain education programs and developer training initiatives',
     allocated: 2900000,
     percentage: 30,
     bgColor: 'bg-blue-50 hover:bg-blue-100/80',
@@ -25,8 +25,8 @@ const fundCategories: FundCategory[] = [
   },
   {
     icon: <Zap className="w-7 h-7" />,
-    title: 'Infraestrutura',
-    description: 'Desenvolvimento de rede e melhorias técnicas do protocolo',
+    title: 'Infrastructure',
+    description: 'Network development and protocol technical improvements',
     allocated: 3867000,
     percentage: 40,
     bgColor: 'bg-[#FBCC5C]/10 hover:bg-[#FBCC5C]/20',
@@ -34,8 +34,8 @@ const fundCategories: FundCategory[] = [
   },
   {
     icon: <Heart className="w-7 h-7" />,
-    title: 'Impacto Social',
-    description: 'Iniciativas comunitárias e projetos de desenvolvimento sustentável',
+    title: 'Social Impact',
+    description: 'Community initiatives and sustainable development projects',
     allocated: 1934000,
     percentage: 20,
     bgColor: 'bg-[#35D07F]/10 hover:bg-[#35D07F]/20',
@@ -43,8 +43,8 @@ const fundCategories: FundCategory[] = [
   },
   {
     icon: <Globe className="w-7 h-7" />,
-    title: 'Ecossistema',
-    description: 'Grants e financiamento para projetos e startups no ecossistema',
+    title: 'Ecosystem',
+    description: 'Grants and funding for ecosystem projects and startups',
     allocated: 967000,
     percentage: 10,
     bgColor: 'bg-purple-50 hover:bg-purple-100/80',
@@ -59,7 +59,7 @@ function formatCelo(value: number): string {
   if (value >= 1000) {
     return `${(value / 1000).toFixed(0)}K`
   }
-  return value.toLocaleString('pt-BR')
+  return value.toLocaleString('en-US')
 }
 
 export function TransparencyHub() {
@@ -70,7 +70,7 @@ export function TransparencyHub() {
       <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h3 className="text-2xl font-bold text-[#1E2336] mb-2">Transparency Hub</h3>
-          <p className="text-slate-600">Para onde vão os fundos da comunidade</p>
+          <p className="text-slate-600">Where community funds go</p>
         </div>
         <a
           href="https://www.celocommunityfund.xyz/"
@@ -78,7 +78,7 @@ export function TransparencyHub() {
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 text-sm text-[#35D07F] hover:text-[#1D8E54] font-medium transition-colors"
         >
-          Ver detalhes completos
+          View full details
           <ExternalLink className="w-4 h-4" />
         </a>
       </div>
@@ -102,7 +102,7 @@ export function TransparencyHub() {
             <p className="text-sm text-slate-600 mb-5 line-clamp-2">{category.description}</p>
 
             <div className="pt-4 border-t border-slate-200/60">
-              <p className="text-xs text-slate-500 font-medium mb-1 uppercase tracking-wide">Alocado</p>
+              <p className="text-xs text-slate-500 font-medium mb-1 uppercase tracking-wide">Allocated</p>
               <p className="text-xl font-bold text-[#35D07F]">
                 {formatCelo(category.allocated)}
               </p>
@@ -116,28 +116,28 @@ export function TransparencyHub() {
       <div className="mt-8 bg-gradient-to-r from-[#1E2336] to-[#2D3348] rounded-2xl p-8 text-white">
         <h4 className="text-lg font-bold mb-6 flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-[#35D07F]" />
-          Resumo da Distribuição
+          Distribution Summary
         </h4>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <div className="p-4 bg-white/5 rounded-xl border border-white/10">
-            <p className="text-sm text-slate-400 mb-2">Total do Fundo</p>
+            <p className="text-sm text-slate-400 mb-2">Total Fund</p>
             <p className="text-3xl font-bold text-[#35D07F]">9.67M</p>
             <p className="text-xs text-slate-500 mt-1">CELO</p>
           </div>
           <div className="p-4 bg-white/5 rounded-xl border border-white/10">
-            <p className="text-sm text-slate-400 mb-2">Total Alocado</p>
+            <p className="text-sm text-slate-400 mb-2">Total Allocated</p>
             <p className="text-3xl font-bold text-[#FBCC5C]">{formatCelo(totalAllocated)}</p>
-            <p className="text-xs text-slate-500 mt-1">70% do total</p>
+            <p className="text-xs text-slate-500 mt-1">70% of total</p>
           </div>
           <div className="p-4 bg-white/5 rounded-xl border border-white/10">
-            <p className="text-sm text-slate-400 mb-2">Disponível</p>
+            <p className="text-sm text-slate-400 mb-2">Available</p>
             <p className="text-3xl font-bold text-white">2.90M</p>
-            <p className="text-xs text-slate-500 mt-1">para novas iniciativas</p>
+            <p className="text-xs text-slate-500 mt-1">for new initiatives</p>
           </div>
           <div className="p-4 bg-white/5 rounded-xl border border-white/10">
-            <p className="text-sm text-slate-400 mb-2">Projetos Ativos</p>
+            <p className="text-sm text-slate-400 mb-2">Active Projects</p>
             <p className="text-3xl font-bold text-white">24</p>
-            <p className="text-xs text-slate-500 mt-1">em execução</p>
+            <p className="text-xs text-slate-500 mt-1">in progress</p>
           </div>
         </div>
 
@@ -152,12 +152,12 @@ export function TransparencyHub() {
             <ExternalLink className="w-3.5 h-3.5" />
           </a>
           <a
-            href="https://celoscan.io/address/0xD533Ca259b330c7A88f74E000a3FaEa2d63B7972"
+            href="https://celoscan.io/address/0xD533Ca0630fc6e7F9B172E9b04B3047aBeb2d235"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm font-medium transition-colors"
           >
-            Ver no CeloScan
+            View on CeloScan
             <ExternalLink className="w-3.5 h-3.5" />
           </a>
         </div>

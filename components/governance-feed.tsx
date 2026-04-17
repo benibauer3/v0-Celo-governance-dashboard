@@ -12,6 +12,7 @@ interface Proposal {
   description: string
   status: 'Executed' | 'Voting' | 'Queued' | 'Expired'
   stage: string
+  category?: 'Education' | 'Infrastructure' | 'Social Impact'
   votesYes: number
   votesNo: number
   votesAbstain: number
@@ -32,10 +33,16 @@ const statusColors: Record<string, string> = {
 }
 
 const statusLabels: Record<string, string> = {
-  Executed: 'Executado',
-  Voting: 'Em Votação',
-  Queued: 'Na Fila',
-  Expired: 'Expirado',
+  Executed: 'Executed',
+  Voting: 'Active',
+  Queued: 'Queued',
+  Expired: 'Expired',
+}
+
+const categoryColors: Record<string, string> = {
+  Education: 'bg-blue-100 text-blue-700 border-blue-200',
+  Infrastructure: 'bg-purple-100 text-purple-700 border-purple-200',
+  'Social Impact': 'bg-emerald-100 text-emerald-700 border-emerald-200',
 }
 
 function formatVotes(votes: number): string {
@@ -55,9 +62,9 @@ function getTimeRemaining(expiresAt?: string): string | null {
   const diff = expires.getTime() - now.getTime()
   if (diff <= 0) return null
   const days = Math.floor(diff / (1000 * 60 * 60 * 24))
-  if (days > 0) return `${days} dia${days > 1 ? 's' : ''} restante${days > 1 ? 's' : ''}`
+  if (days > 0) return `${days} day${days > 1 ? 's' : ''} remaining`
   const hours = Math.floor(diff / (1000 * 60 * 60))
-  return `${hours} hora${hours > 1 ? 's' : ''} restante${hours > 1 ? 's' : ''}`
+  return `${hours} hour${hours > 1 ? 's' : ''} remaining`
 }
 
 export function GovernanceFeed() {
@@ -70,13 +77,12 @@ export function GovernanceFeed() {
       try {
         setLoading(true)
         const response = await fetch('/api/proposals')
-        if (!response.ok) throw new Error('Falha ao buscar propostas')
+        if (!response.ok) throw new Error('Failed to fetch proposals')
         const data = await response.json()
         setProposals(data.proposals || [])
         setError(null)
       } catch (err) {
-        console.error('Erro ao buscar propostas:', err)
-        setError(err instanceof Error ? err.message : 'Erro desconhecido')
+        setError(err instanceof Error ? err.message : 'Unknown error')
       } finally {
         setLoading(false)
       }
@@ -90,11 +96,11 @@ export function GovernanceFeed() {
       <div className="w-full">
         <div className="mb-6">
           <h3 className="text-2xl font-bold text-[#1E2336] mb-2">Governance Feed</h3>
-          <p className="text-slate-600">Propostas de governança em tempo real</p>
+          <p className="text-slate-600">Real-time governance proposals from Mondo</p>
         </div>
         <div className="flex items-center justify-center py-12">
           <Loader2 className="w-8 h-8 text-[#35D07F] animate-spin" />
-          <span className="ml-3 text-slate-600">Carregando propostas...</span>
+          <span className="ml-3 text-slate-600">Loading proposals...</span>
         </div>
       </div>
     )
@@ -105,7 +111,7 @@ export function GovernanceFeed() {
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h3 className="text-2xl font-bold text-[#1E2336] mb-2">Governance Feed</h3>
-          <p className="text-slate-600">Propostas de governança em tempo real</p>
+          <p className="text-slate-600">Real-time governance proposals from Mondo</p>
         </div>
         <a
           href="https://mondo.celo.org/governance"
@@ -113,7 +119,7 @@ export function GovernanceFeed() {
           rel="noopener noreferrer"
           className="flex items-center gap-2 text-sm text-[#35D07F] hover:text-[#1D8E54] font-medium transition-colors"
         >
-          Ver no Mondo
+          View on Mondo
           <ExternalLink className="w-4 h-4" />
         </a>
       </div>
@@ -146,6 +152,14 @@ export function GovernanceFeed() {
                     <span className="text-xs text-slate-500 font-mono bg-slate-100 px-2 py-1 rounded">
                       CGP-{proposal.cgpNumber}
                     </span>
+                    {proposal.category && (
+                      <Badge
+                        className={`${categoryColors[proposal.category]} border font-medium text-xs`}
+                        variant="outline"
+                      >
+                        {proposal.category}
+                      </Badge>
+                    )}
                   </div>
 
                   <a
@@ -177,7 +191,7 @@ export function GovernanceFeed() {
 
                     {proposal.executedAt && (
                       <div className="flex items-center gap-1.5 text-[#35D07F]">
-                        <span>Executado em {new Date(proposal.executedAt).toLocaleDateString('pt-BR')}</span>
+                        <span>Executed on {new Date(proposal.executedAt).toLocaleDateString('en-US')}</span>
                       </div>
                     )}
                   </div>
@@ -219,11 +233,11 @@ export function GovernanceFeed() {
                     </div>
 
                     <div className="flex justify-between text-xs text-slate-500">
-                      <span>Sim: {formatVotes(proposal.votesYes)}</span>
-                      <span>Não: {formatVotes(proposal.votesNo)}</span>
+                      <span>Yes: {formatVotes(proposal.votesYes)}</span>
+                      <span>No: {formatVotes(proposal.votesNo)}</span>
                     </div>
                     <p className="text-xs text-slate-400 mt-1">
-                      Total: {formatVotes(proposal.totalVotes)} votos
+                      Total: {formatVotes(proposal.totalVotes)} votes
                     </p>
                   </div>
                 )}
