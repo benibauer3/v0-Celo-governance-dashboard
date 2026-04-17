@@ -1,69 +1,84 @@
-import { HeroStats } from '@/components/hero-stats';
-import { GovernanceFeed } from '@/components/governance-feed';
-import { TransparencyHub } from '@/components/transparency-hub';
-import { ActionBar } from '@/components/action-bar';
+"use client"
 
-export const metadata = {
-  title: 'Celo Governance Tracker',
-  description: 'Real-time Web3 governance dashboard for Celo Community Fund. Track proposals, fund allocation, and governance metrics.',
-};
+import { useState, useEffect } from "react"
+import { createPublicClient, http, formatEther } from "viem"
+import { celo } from "viem/chains"
+// Importe os componentes do seu Shadcn UI aqui (conforme o v0 gerou)
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 
-export default function Home() {
+// 1. ABI Necessária para ler o saldo
+const erc20Abi = [
+  {
+    name: "balanceOf",
+    type: "function",
+    stateMutability: "view",
+    inputs: [{ name: "account", type: "address" }],
+    outputs: [{ name: "balance", type: "uint256" }],
+  },
+]
+
+export default function Dashboard() {
+  const [balance, setBalance] = useState("0")
+  const [isLoading, setIsLoading] = useState(true)
+
+  // 2. Configuração do Client Celo
+  const client = createPublicClient({
+    chain: celo,
+    transport: http("https://forno.celo.org"), // RPC Oficial
+  })
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        setIsLoading(true)
+        // Busca o saldo real do Community Fund
+        const data = await client.readContract({
+          address: "0x471EcE3750Da237f93B8E339c536989b8978a438", // CELO Token
+          abi: erc20Abi,
+          functionName: "balanceOf",
+          args: ["0xD533Ca0630fc6e7F9B172E9b04B3047aBeb2d235"], // Community Fund
+        })
+        
+        // Formata e simplifica o número para o Dashboard
+        const formatted = parseFloat(formatEther(data as bigint)).toLocaleString('en-US', {
+            maximumFractionDigits: 0
+        })
+        setBalance(formatted)
+      } catch (error) {
+        console.error("Erro ao buscar dados da Celo:", error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [])
+
   return (
-    <main className="min-h-screen bg-gradient-to-b from-white via-slate-50 to-slate-100">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur-lg">
-        <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-celo-green to-celo-gold flex items-center justify-center">
-                <span className="text-xl font-bold text-slate-900">◉</span>
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-slate-900">Celo Governance</h1>
-                <p className="text-xs text-slate-600">Community Fund Tracker</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-status-success rounded-full" />
-              <span className="text-sm font-medium text-slate-600">Live</span>
-            </div>
+    <div className="p-8 bg-[#123C13] min-h-screen text-white">
+      {/* Exemplo de exibição do saldo no seu Card */}
+      <Card className="bg-[#FCFF52] text-[#123C13]">
+        <CardHeader>
+          <CardTitle>Celo Community Fund</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-4xl font-bold">
+            {isLoading ? "Carregando..." : `${balance} CELO`}
           </div>
-        </div>
-      </header>
+          <p className="text-sm opacity-80 mt-2">Dados reais da Mainnet</p>
+        </CardContent>
+      </Card>
 
-      {/* Main Content */}
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        {/* Hero Section */}
-        <section className="mb-12">
-          <HeroStats />
-        </section>
+      {/* Botão MiniPay Hook Ready */}
+      <Button 
+        onClick={() => window.ethereum?.request({ method: 'eth_requestAccounts' })}
+        className="mt-4 bg-[#FCFF52] text-[#123C13] hover:bg-yellow-400"
+      >
+        Conectar MiniPay
+      </Button>
 
-        {/* Action Bar */}
-        <section className="mb-12">
-          <ActionBar />
-        </section>
-
-        {/* Governance Feed */}
-        <section className="mb-12">
-          <GovernanceFeed />
-        </section>
-
-        {/* Transparency Hub */}
-        <section className="mb-12">
-          <TransparencyHub />
-        </section>
-
-        {/* Footer */}
-        <footer className="border-t border-slate-200 py-8 text-center text-sm text-slate-600">
-          <p>
-            Celo Governance Tracker • Built with transparency and community in mind
-          </p>
-          <p className="mt-2 text-xs text-slate-500">
-            Data sourced from Celo blockchain • Real-time updates
-          </p>
-        </footer>
-      </div>
-    </main>
-  );
+      {/* Continue com o restante do layout gerado pelo v0 abaixo... */}
+    </div>
+  )
 }
