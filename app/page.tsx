@@ -32,78 +32,87 @@ export default function Dashboard() {
   }, [])
 
   const SectionCard = ({ title, children }: { title: string, children: React.ReactNode }) => (
-    <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '24px', marginBottom: '20px', border: '1px solid #E2E8F0' }}>
-      <h3 style={{ fontSize: '13px', fontWeight: '700', color: '#2E3338', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '20px', opacity: 0.6 }}>{title}</h3>
+    <div style={{ backgroundColor: 'white', borderRadius: '20px', padding: '32px', marginBottom: '24px', border: '1px solid #E2E8F0', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
+      <h3 style={{ fontSize: '12px', fontWeight: '700', color: '#2E3338', textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: '24px', opacity: 0.6 }}>{title}</h3>
       {children}
     </div>
   )
 
   const ActionItem = ({ label, sub, link }: { label: string, sub: string, link: string }) => (
-    <a href={link} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px', borderRadius: '12px', backgroundColor: '#FCF6F1', border: '1px solid #E2E8F0', textDecoration: 'none', color: '#2E3338', marginBottom: '12px', transition: 'transform 0.2s' }}>
+    <a href={link} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px', borderRadius: '14px', backgroundColor: '#FCF6F1', border: '1px solid #E2E8F0', textDecoration: 'none', color: '#2E3338', marginBottom: '12px', transition: 'all 0.2s' }}>
       <div>
-        <div style={{ fontWeight: '600', fontSize: '16px', fontFamily: 'serif' }}>{label}</div>
-        <div style={{ fontSize: '13px', opacity: 0.7 }}>{sub}</div>
+        <div style={{ fontWeight: '600', fontSize: '17px', fontFamily: 'serif', marginBottom: '4px' }}>{label}</div>
+        <div style={{ fontSize: '13px', opacity: 0.6 }}>{sub}</div>
       </div>
-      <span style={{ fontSize: '18px' }}>→</span>
+      <span style={{ fontSize: '20px', color: '#35D07F' }}>→</span>
     </a>
   )
 
   return (
-    <div style={{ backgroundColor: '#FCF6F1', minHeight: '100vh', color: '#2E3338', padding: '40px 20px', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+    <div style={{ backgroundColor: '#FCF6F1', minHeight: '100vh', color: '#2E3338', padding: '60px 24px', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
       
-      {/* Header com Logo Prosperity Yellow no Topo Esquerdo */}
-      <header style={{ maxWidth: '900px', margin: '0 auto 60px auto', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <div style={{ backgroundColor: '#FCFF52', padding: '12px', borderRadius: '8px', display: 'inline-block' }}>
-            <img src="https://reserve.org/static/media/celo-logo.9304323b.svg" alt="Celo Logo" style={{ height: '24px', filter: 'brightness(0)' }} />
-        </div>
-        <button style={{ backgroundColor: '#2E3338', color: '#FCF6F1', border: 'none', padding: '12px 28px', borderRadius: '100px', fontWeight: '600', fontSize: '14px', cursor: 'pointer' }}>
+      {/* Header - Logo no Canto Superior Esquerdo */}
+      <header style={{ maxWidth: '1000px', margin: '0 auto 80px auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <a href="https://celo.org" target="_blank" rel="noopener noreferrer" style={{ display: 'block' }}>
+          <div style={{ backgroundColor: '#FCFF52', padding: '16px 24px', borderRadius: '4px', border: '2px solid #2E3338' }}>
+            <img 
+              src="https://images.ctfassets.net/761l7gh5x5an/5NnIn92YV1vM7Z4vL9E3W1/3c0c16383796d1163456093678508f7f/Celo_Logo_Onyx.svg" 
+              alt="Celo Logo" 
+              style={{ height: '28px', display: 'block' }} 
+            />
+          </div>
+        </a>
+        <button style={{ backgroundColor: '#2E3338', color: '#FCF6F1', border: 'none', padding: '14px 32px', borderRadius: '100px', fontWeight: '600', fontSize: '14px', cursor: 'pointer', letterSpacing: '0.02em' }}>
           Conectar MiniPay
         </button>
       </header>
 
-      <main style={{ maxWidth: '900px', margin: '0 auto' }}>
+      <main style={{ maxWidth: '1000px', margin: '0 auto' }}>
         
-        {/* Hero Section - Typography Hierarchy */}
-        <div style={{ marginBottom: '60px' }}>
-          <h2 style={{ fontSize: '14px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.1em', opacity: 0.5, marginBottom: '12px' }}>Community Fund Balance</h2>
-          <div style={{ fontSize: '82px', fontWeight: '400', fontFamily: 'serif', lineHeight: '1', marginBottom: '10px' }}>
-            {balance} <span style={{ fontSize: '24px', verticalAlign: 'middle', backgroundColor: '#FCFF52', padding: '4px 12px', borderRadius: '4px', fontWeight: 'bold' }}>CELO</span>
+        {/* Hero Section - Onyx on Gypsum */}
+        <div style={{ marginBottom: '80px' }}>
+          <h2 style={{ fontSize: '13px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.2em', opacity: 0.5, marginBottom: '16px' }}>Community Fund Balance</h2>
+          <div style={{ fontSize: '96px', fontWeight: '400', fontFamily: 'serif', lineHeight: '1', marginBottom: '20px', letterSpacing: '-0.03em' }}>
+            {balance} <span style={{ fontSize: '28px', verticalAlign: 'middle', backgroundColor: '#FCFF52', padding: '6px 16px', borderRadius: '6px', fontWeight: '800', border: '1px solid #2E3338', marginLeft: '10px' }}>CELO</span>
           </div>
-          <p style={{ fontSize: '16px', opacity: 0.6, maxWidth: '500px' }}>Transparência em tempo real dos recursos destinados ao crescimento do ecossistema Celo.</p>
+          <p style={{ fontSize: '18px', opacity: 0.7, maxWidth: '600px', lineHeight: '1.6' }}>Transparência absoluta. Monitorando o tesouro de governança da rede Celo em tempo real.</p>
         </div>
 
-        {/* Grid Principal */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '20px' }}>
+        {/* Layout de Cards */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px' }}>
           
-          <SectionCard title="Propostas Ativas (Mondo)">
+          <SectionCard title="Propostas de Governança">
             <ActionItem label="CGP-124: Refill Community Fund" sub="Solicitação: 5.000.000 CELO • Em votação" link="https://mondo.celo.org/governance" />
             <ActionItem label="CGP-125: Eco-Ecosystem Growth" sub="Solicitação: 1.200.000 CELO • Revisão" link="https://mondo.celo.org/governance" />
-            <div style={{ textAlign: 'center', marginTop: '16px' }}>
-              <a href="https://mondo.celo.org/governance" target="_blank" style={{ fontSize: '14px', color: '#2E3338', fontWeight: '700', textDecoration: 'underline' }}>Explorar Mondo Governance</a>
+            <div style={{ textAlign: 'center', marginTop: '20px' }}>
+              <a href="https://mondo.celo.org/governance" target="_blank" style={{ fontSize: '14px', color: '#2E3338', fontWeight: '700', textDecoration: 'underline', textUnderlineOffset: '4px' }}>Acessar todas as propostas no Mondo</a>
             </div>
           </SectionCard>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
-            <SectionCard title="Validadores">
-              <ActionItem label="Network Health" sub="98.2% Active Uptime" link="https://explorer.celo.org/mainnet/validators" />
-              <ActionItem label="Validator Groups" sub="Ver rankings de performance" link="https://explorer.celo.org/mainnet/validator-groups" />
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '24px' }}>
+            <SectionCard title="Validadores & Rede">
+              <ActionItem label="Network Health Status" sub="Monitoramento de Uptime e Performance" link="https://mondo.celo.org/" />
+              <ActionItem label="Validator Rankings" sub="Explore os grupos de validadores ativos" link="https://mondo.celo.org/" />
             </SectionCard>
 
-            <SectionCard title="Delegados">
-              <ActionItem label="Voting Power Distribution" sub="Governança Descentralizada" link="https://mondo.celo.org/governance" />
-              <ActionItem label="Maiores Delegados" sub="Instituições e Comunidade" link="https://explorer.celo.org/mainnet/validator-groups" />
+            <SectionCard title="Participação & Votos">
+              <ActionItem label="Voting Power Distribution" sub="Descentralização e pesos de voto" link="https://mondo.celo.org/delegate" />
+              <ActionItem label="Maiores Delegados" sub="Ranking de participação na governança" link="https://mondo.celo.org/delegate" />
             </SectionCard>
           </div>
         </div>
       </main>
 
-      <footer style={{ marginTop: '80px', textAlign: 'left', maxWidth: '900px', margin: '80px auto 0 auto', borderTop: '1px solid #E2E8F0', paddingTop: '40px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <footer style={{ marginTop: '100px', textAlign: 'left', maxWidth: '1000px', margin: '100px auto 40px auto', borderTop: '2px solid #2E3338', paddingTop: '40px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
             <div>
-                <p style={{ margin: 0, fontSize: '18px', fontWeight: '400', fontFamily: 'serif' }}>Construído por **Beni Bauer**</p>
-                <p style={{ margin: '4px 0 0 0', fontSize: '12px', opacity: 0.4, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Celo Community Dashboard 2026</p>
+                <p style={{ margin: 0, fontSize: '20px', fontWeight: '400', fontFamily: 'serif' }}>Construído por **Beni Bauer**</p>
+                <p style={{ margin: '8px 0 0 0', fontSize: '12px', opacity: 0.5, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Celo Ecosystem Dashboard • 2026</p>
             </div>
-            <div style={{ color: '#35D07F', fontWeight: 'bold', fontSize: '12px' }}>POWERED BY CELO</div>
+            <div style={{ textAlign: 'right' }}>
+              <div style={{ fontSize: '11px', fontWeight: '800', letterSpacing: '0.1em', opacity: 0.4, marginBottom: '8px' }}>POWERED BY</div>
+              <img src="https://images.ctfassets.net/761l7gh5x5an/5NnIn92YV1vM7Z4vL9E3W1/3c0c16383796d1163456093678508f7f/Celo_Logo_Onyx.svg" alt="Celo" style={{ height: '14px' }} />
+            </div>
         </div>
       </footer>
     </div>
