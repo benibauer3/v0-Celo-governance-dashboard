@@ -28,10 +28,11 @@
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --celo-gold: #fcff52;
-  --celo-gold-dark: #e7df3a;
-  --celo-green: #35d07f;
-  --celo-green-dark: #1c7c54;
+  --celo-gold: #FBCC5C;
+  --celo-gold-dark: #E5A229;
+  --celo-green: #35D07F;
+  --celo-green-dark: #1D8E54;
+  --celo-dark: #1E2336;
   --status-success: #10b981;
   --status-info: #0ea5e9;
   --status-warning: #f59e0b;

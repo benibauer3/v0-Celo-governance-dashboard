@@ -1,160 +1,251 @@
-'use client';
+'use client'
 
-import { Badge } from '@/components/ui/badge';
-import { Card } from '@/components/ui/card';
-import { ThumbsUp, MessageCircle, Clock } from 'lucide-react';
+import { useEffect, useState } from 'react'
+import { Badge } from '@/components/ui/badge'
+import { Card } from '@/components/ui/card'
+import { ThumbsUp, ThumbsDown, Clock, ExternalLink, Loader2 } from 'lucide-react'
 
-interface ProposalCard {
-  id: string;
-  title: string;
-  description: string;
-  status: 'Executed' | 'Voting' | 'Queued' | 'Expired';
-  votesFor: number;
-  votesTotal: number;
-  timeRemaining?: string;
-  author: string;
+interface Proposal {
+  id: string
+  cgpNumber: number
+  title: string
+  description: string
+  status: 'Executed' | 'Voting' | 'Queued' | 'Expired'
+  stage: string
+  category?: 'Education' | 'Infrastructure' | 'Social Impact'
+  votesYes: number
+  votesNo: number
+  votesAbstain: number
+  totalVotes: number
+  approvalPercentage: number
+  proposer: string
+  createdAt: string
+  expiresAt?: string
+  executedAt?: string
+  link: string
 }
 
-const proposals: ProposalCard[] = [
-  {
-    id: '1',
-    title: 'Increase Community Fund Allocation to Education',
-    description: 'Proposal to allocate 15M CELO to blockchain education initiatives across Africa.',
-    status: 'Voting',
-    votesFor: 8250,
-    votesTotal: 10000,
-    timeRemaining: '2 days remaining',
-    author: 'Celo Foundation',
-  },
-  {
-    id: '2',
-    title: 'Infrastructure Grant Program Phase 2',
-    description: 'Establish second phase of infrastructure development grants for developers.',
-    status: 'Voting',
-    votesFor: 7500,
-    votesTotal: 10000,
-    timeRemaining: '5 days remaining',
-    author: 'Dev Team',
-  },
-  {
-    id: '3',
-    title: 'Sustainability Initiative Funding',
-    description: 'Fund environmental and social impact projects in emerging markets.',
-    status: 'Executed',
-    votesFor: 9200,
-    votesTotal: 10000,
-    author: 'Impact DAO',
-  },
-  {
-    id: '4',
-    title: 'Protocol Enhancement v3.2',
-    description: 'Deploy performance optimizations and security patches.',
-    status: 'Queued',
-    votesFor: 0,
-    votesTotal: 0,
-    author: 'Technical Committee',
-  },
-  {
-    id: '5',
-    title: 'Validator Incentive Structure Revision',
-    description: 'Adjust validator rewards to improve network security.',
-    status: 'Expired',
-    votesFor: 5200,
-    votesTotal: 10000,
-    author: 'Governance Council',
-  },
-];
+const statusColors: Record<string, string> = {
+  Executed: 'bg-[#35D07F]/10 text-[#35D07F] border-[#35D07F]/30',
+  Voting: 'bg-[#0EA5E9]/10 text-[#0EA5E9] border-[#0EA5E9]/30',
+  Queued: 'bg-[#FBCC5C]/10 text-[#E5A229] border-[#FBCC5C]/30',
+  Expired: 'bg-[#EF4444]/10 text-[#EF4444] border-[#EF4444]/30',
+}
 
-const statusColors = {
-  Executed: 'bg-status-success/10 text-status-success border-status-success/20',
-  Voting: 'bg-status-info/10 text-status-info border-status-info/20',
-  Queued: 'bg-status-warning/10 text-status-warning border-status-warning/20',
-  Expired: 'bg-status-error/10 text-status-error border-status-error/20',
-};
+const statusLabels: Record<string, string> = {
+  Executed: 'Executed',
+  Voting: 'Active',
+  Queued: 'Queued',
+  Expired: 'Expired',
+}
 
-const statusIcons = {
-  Executed: '✓',
-  Voting: '◉',
-  Queued: '⧖',
-  Expired: '✕',
-};
+const categoryColors: Record<string, string> = {
+  Education: 'bg-blue-100 text-blue-700 border-blue-200',
+  Infrastructure: 'bg-purple-100 text-purple-700 border-purple-200',
+  'Social Impact': 'bg-emerald-100 text-emerald-700 border-emerald-200',
+}
+
+function formatVotes(votes: number): string {
+  if (votes >= 1000000) {
+    return `${(votes / 1000000).toFixed(1)}M`
+  }
+  if (votes >= 1000) {
+    return `${(votes / 1000).toFixed(0)}K`
+  }
+  return votes.toString()
+}
+
+function getTimeRemaining(expiresAt?: string): string | null {
+  if (!expiresAt) return null
+  const now = new Date()
+  const expires = new Date(expiresAt)
+  const diff = expires.getTime() - now.getTime()
+  if (diff <= 0) return null
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+  if (days > 0) return `${days} day${days > 1 ? 's' : ''} remaining`
+  const hours = Math.floor(diff / (1000 * 60 * 60))
+  return `${hours} hour${hours > 1 ? 's' : ''} remaining`
+}
 
 export function GovernanceFeed() {
+  const [proposals, setProposals] = useState<Proposal[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchProposals = async () => {
+      try {
+        setLoading(true)
+        const response = await fetch('/api/proposals')
+        if (!response.ok) throw new Error('Failed to fetch proposals')
+        const data = await response.json()
+        setProposals(data.proposals || [])
+        setError(null)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Unknown error')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchProposals()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="w-full">
+        <div className="mb-6">
+          <h3 className="text-2xl font-bold text-[#1E2336] mb-2">Governance Feed</h3>
+          <p className="text-slate-600">Real-time governance proposals from Mondo</p>
+        </div>
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="w-8 h-8 text-[#35D07F] animate-spin" />
+          <span className="ml-3 text-slate-600">Loading proposals...</span>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="w-full">
-      <div className="mb-6">
-        <h3 className="text-2xl font-bold text-slate-900 mb-2">Governance Feed</h3>
-        <p className="text-slate-600">Real-time governance proposals and voting status</p>
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h3 className="text-2xl font-bold text-[#1E2336] mb-2">Governance Feed</h3>
+          <p className="text-slate-600">Real-time governance proposals from Mondo</p>
+        </div>
+        <a
+          href="https://mondo.celo.org/governance"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 text-sm text-[#35D07F] hover:text-[#1D8E54] font-medium transition-colors"
+        >
+          View on Mondo
+          <ExternalLink className="w-4 h-4" />
+        </a>
       </div>
+
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+          <p className="text-red-600 text-sm">{error}</p>
+        </div>
+      )}
 
       <div className="space-y-4">
-        {proposals.map((proposal) => (
-          <Card
-            key={proposal.id}
-            className="p-6 border border-slate-200 hover:border-celo-green/30 transition-all duration-300 hover:shadow-md"
-          >
-            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-              {/* Content */}
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-3">
-                  <Badge
-                    className={`${statusColors[proposal.status]} border font-semibold`}
-                    variant="outline"
-                  >
-                    <span className="mr-1">{statusIcons[proposal.status]}</span>
-                    {proposal.status}
-                  </Badge>
-                  <span className="text-xs text-slate-500 font-medium"># {proposal.id}</span>
-                </div>
+        {proposals.map((proposal) => {
+          const timeRemaining = getTimeRemaining(proposal.expiresAt)
 
-                <h4 className="text-lg font-bold text-slate-900 mb-2 text-balance">{proposal.title}</h4>
-                <p className="text-slate-600 text-sm mb-4">{proposal.description}</p>
-
-                <div className="flex flex-wrap items-center gap-4 text-xs text-slate-600">
-                  <div className="flex items-center gap-1">
-                    <span className="font-medium">By:</span>
-                    <span>{proposal.author}</span>
-                  </div>
-
-                  {proposal.timeRemaining && (
-                    <div className="flex items-center gap-1">
-                      <Clock className="w-4 h-4" />
-                      <span>{proposal.timeRemaining}</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Voting Stats */}
-              {proposal.votesTotal > 0 && (
-                <div className="md:text-right md:min-w-fit">
-                  <div className="flex items-center gap-2 justify-start md:justify-end mb-2">
-                    <ThumbsUp className="w-4 h-4 text-celo-green" />
-                    <span className="font-bold text-slate-900">
-                      {(
-                        (proposal.votesFor / proposal.votesTotal) *
-                        100
-                      ).toFixed(1)}%
+          return (
+            <Card
+              key={proposal.id}
+              className="p-6 border border-slate-200 hover:border-[#35D07F]/40 transition-all duration-300 hover:shadow-lg bg-white"
+            >
+              <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                {/* Content */}
+                <div className="flex-1">
+                  <div className="flex flex-wrap items-center gap-3 mb-3">
+                    <Badge
+                      className={`${statusColors[proposal.status]} border font-semibold`}
+                      variant="outline"
+                    >
+                      {statusLabels[proposal.status]}
+                    </Badge>
+                    <span className="text-xs text-slate-500 font-mono bg-slate-100 px-2 py-1 rounded">
+                      CGP-{proposal.cgpNumber}
                     </span>
+                    {proposal.category && (
+                      <Badge
+                        className={`${categoryColors[proposal.category]} border font-medium text-xs`}
+                        variant="outline"
+                      >
+                        {proposal.category}
+                      </Badge>
+                    )}
                   </div>
-                  <p className="text-xs text-slate-600">
-                    {proposal.votesFor.toLocaleString()} /{' '}
-                    {proposal.votesTotal.toLocaleString()} votes
+
+                  <a
+                    href={proposal.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group"
+                  >
+                    <h4 className="text-lg font-bold text-[#1E2336] mb-2 text-balance group-hover:text-[#35D07F] transition-colors">
+                      {proposal.title}
+                    </h4>
+                  </a>
+                  <p className="text-slate-600 text-sm mb-4 line-clamp-2">
+                    {proposal.description}
                   </p>
-                  <div className="w-32 bg-slate-200 rounded-full h-2 mt-2 overflow-hidden">
-                    <div
-                      className="bg-gradient-to-r from-celo-green to-celo-gold h-full rounded-full transition-all"
-                      style={{
-                        width: `${(proposal.votesFor / proposal.votesTotal) * 100}%`,
-                      }}
-                    />
+
+                  <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500">
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-medium text-slate-600">Proposer:</span>
+                      <span className="font-mono">{proposal.proposer}</span>
+                    </div>
+
+                    {timeRemaining && (
+                      <div className="flex items-center gap-1.5 text-[#0EA5E9]">
+                        <Clock className="w-3.5 h-3.5" />
+                        <span className="font-medium">{timeRemaining}</span>
+                      </div>
+                    )}
+
+                    {proposal.executedAt && (
+                      <div className="flex items-center gap-1.5 text-[#35D07F]">
+                        <span>Executed on {new Date(proposal.executedAt).toLocaleDateString('en-US')}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
-              )}
-            </div>
-          </Card>
-        ))}
+
+                {/* Voting Stats */}
+                {proposal.totalVotes > 0 && (
+                  <div className="lg:text-right lg:min-w-[180px] bg-slate-50 rounded-lg p-4">
+                    <div className="flex items-center gap-3 justify-between lg:justify-end mb-3">
+                      <div className="flex items-center gap-1.5">
+                        <ThumbsUp className="w-4 h-4 text-[#35D07F]" />
+                        <span className="font-bold text-[#35D07F]">
+                          {proposal.approvalPercentage}%
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <ThumbsDown className="w-4 h-4 text-[#EF4444]" />
+                        <span className="font-bold text-[#EF4444]">
+                          {(100 - proposal.approvalPercentage - (proposal.votesAbstain / proposal.totalVotes * 100)).toFixed(1)}%
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="w-full bg-slate-200 rounded-full h-2.5 overflow-hidden mb-2">
+                      <div className="flex h-full">
+                        <div
+                          className="bg-[#35D07F] h-full transition-all"
+                          style={{ width: `${proposal.approvalPercentage}%` }}
+                        />
+                        <div
+                          className="bg-[#FBCC5C] h-full transition-all"
+                          style={{ width: `${(proposal.votesAbstain / proposal.totalVotes) * 100}%` }}
+                        />
+                        <div
+                          className="bg-[#EF4444] h-full transition-all"
+                          style={{ width: `${(proposal.votesNo / proposal.totalVotes) * 100}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex justify-between text-xs text-slate-500">
+                      <span>Yes: {formatVotes(proposal.votesYes)}</span>
+                      <span>No: {formatVotes(proposal.votesNo)}</span>
+                    </div>
+                    <p className="text-xs text-slate-400 mt-1">
+                      Total: {formatVotes(proposal.totalVotes)} votes
+                    </p>
+                  </div>
+                )}
+              </div>
+            </Card>
+          )
+        })}
       </div>
     </div>
-  );
+  )
 }
