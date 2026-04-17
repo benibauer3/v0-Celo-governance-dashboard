@@ -1,108 +1,167 @@
-'use client';
+'use client'
 
-import { Card } from '@/components/ui/card';
-import { BookOpen, Zap, Heart } from 'lucide-react';
+import { Card } from '@/components/ui/card'
+import { BookOpen, Zap, Heart, Globe, ExternalLink } from 'lucide-react'
 
 interface FundCategory {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-  allocated: number;
-  percentage: number;
-  color: string;
+  icon: React.ReactNode
+  title: string
+  description: string
+  allocated: number
+  percentage: number
+  bgColor: string
+  iconColor: string
 }
 
 const fundCategories: FundCategory[] = [
   {
-    icon: <BookOpen className="w-8 h-8" />,
-    title: 'Education',
-    description: 'Blockchain literacy and developer education programs',
-    allocated: 15000000,
-    percentage: 35.3,
-    color: 'bg-blue-50 border-blue-200',
+    icon: <BookOpen className="w-7 h-7" />,
+    title: 'Educação',
+    description: 'Programas de educação em blockchain e formação de desenvolvedores',
+    allocated: 2900000,
+    percentage: 30,
+    bgColor: 'bg-blue-50 hover:bg-blue-100/80',
+    iconColor: 'text-blue-600 bg-blue-100',
   },
   {
-    icon: <Zap className="w-8 h-8" />,
-    title: 'Infrastructure',
-    description: 'Network development and technical improvements',
-    allocated: 18000000,
-    percentage: 42.4,
-    color: 'bg-amber-50 border-amber-200',
+    icon: <Zap className="w-7 h-7" />,
+    title: 'Infraestrutura',
+    description: 'Desenvolvimento de rede e melhorias técnicas do protocolo',
+    allocated: 3867000,
+    percentage: 40,
+    bgColor: 'bg-[#FBCC5C]/10 hover:bg-[#FBCC5C]/20',
+    iconColor: 'text-[#E5A229] bg-[#FBCC5C]/20',
   },
   {
-    icon: <Heart className="w-8 h-8" />,
-    title: 'Social Impact',
-    description: 'Community initiatives and sustainable development',
-    allocated: 9500000,
-    percentage: 22.4,
-    color: 'bg-green-50 border-green-200',
+    icon: <Heart className="w-7 h-7" />,
+    title: 'Impacto Social',
+    description: 'Iniciativas comunitárias e projetos de desenvolvimento sustentável',
+    allocated: 1934000,
+    percentage: 20,
+    bgColor: 'bg-[#35D07F]/10 hover:bg-[#35D07F]/20',
+    iconColor: 'text-[#1D8E54] bg-[#35D07F]/20',
   },
-];
+  {
+    icon: <Globe className="w-7 h-7" />,
+    title: 'Ecossistema',
+    description: 'Grants e financiamento para projetos e startups no ecossistema',
+    allocated: 967000,
+    percentage: 10,
+    bgColor: 'bg-purple-50 hover:bg-purple-100/80',
+    iconColor: 'text-purple-600 bg-purple-100',
+  },
+]
+
+function formatCelo(value: number): string {
+  if (value >= 1000000) {
+    return `${(value / 1000000).toFixed(2)}M`
+  }
+  if (value >= 1000) {
+    return `${(value / 1000).toFixed(0)}K`
+  }
+  return value.toLocaleString('pt-BR')
+}
 
 export function TransparencyHub() {
+  const totalAllocated = fundCategories.reduce((sum, cat) => sum + cat.allocated, 0)
+
   return (
     <div className="w-full">
-      <div className="mb-8">
-        <h3 className="text-2xl font-bold text-slate-900 mb-2">Transparency Hub</h3>
-        <p className="text-slate-600">Where your community funds are being allocated</p>
+      <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h3 className="text-2xl font-bold text-[#1E2336] mb-2">Transparency Hub</h3>
+          <p className="text-slate-600">Para onde vão os fundos da comunidade</p>
+        </div>
+        <a
+          href="https://www.celocommunityfund.xyz/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 text-sm text-[#35D07F] hover:text-[#1D8E54] font-medium transition-colors"
+        >
+          Ver detalhes completos
+          <ExternalLink className="w-4 h-4" />
+        </a>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {fundCategories.map((category, index) => (
           <Card
             key={index}
-            className={`p-6 border-2 transition-all duration-300 hover:shadow-lg ${category.color}`}
+            className={`p-6 border border-slate-200 transition-all duration-300 hover:shadow-lg hover:border-[#35D07F]/30 ${category.bgColor}`}
           >
-            <div className="flex items-center justify-between mb-4">
-              <div className="text-slate-900">{category.icon}</div>
+            <div className="flex items-start justify-between mb-4">
+              <div className={`p-2.5 rounded-xl ${category.iconColor}`}>
+                {category.icon}
+              </div>
               <div className="text-right">
-                <p className="text-2xl font-bold text-slate-900">{category.percentage}%</p>
-                <p className="text-xs text-slate-600 font-medium">of allocation</p>
+                <p className="text-2xl font-bold text-[#1E2336]">{category.percentage}%</p>
               </div>
             </div>
 
-            <h4 className="text-lg font-bold text-slate-900 mb-2">{category.title}</h4>
-            <p className="text-sm text-slate-600 mb-6">{category.description}</p>
+            <h4 className="text-lg font-bold text-[#1E2336] mb-2">{category.title}</h4>
+            <p className="text-sm text-slate-600 mb-5 line-clamp-2">{category.description}</p>
 
-            <div className="pt-4 border-t border-slate-200">
-              <p className="text-xs text-slate-600 font-medium mb-2">ALLOCATED</p>
-              <p className="text-2xl font-bold text-celo-green">
-                {(category.allocated / 1000000).toFixed(1)}M
+            <div className="pt-4 border-t border-slate-200/60">
+              <p className="text-xs text-slate-500 font-medium mb-1 uppercase tracking-wide">Alocado</p>
+              <p className="text-xl font-bold text-[#35D07F]">
+                {formatCelo(category.allocated)}
               </p>
-              <p className="text-xs text-slate-500 mt-1">CELO</p>
-            </div>
-
-            <div className="w-full bg-slate-200 rounded-full h-2 mt-4 overflow-hidden">
-              <div
-                className="bg-gradient-to-r from-celo-green to-celo-gold h-full rounded-full"
-                style={{ width: `${category.percentage}%` }}
-              />
+              <p className="text-xs text-slate-500 mt-0.5">CELO</p>
             </div>
           </Card>
         ))}
       </div>
 
       {/* Summary Section */}
-      <div className="mt-8 bg-gradient-to-r from-celo-green/5 to-celo-gold/10 rounded-xl border border-celo-green/20 p-6">
-        <h4 className="text-lg font-bold text-slate-900 mb-4">Fund Distribution Summary</h4>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div>
-            <p className="text-sm text-slate-600 mb-1">Total Allocated</p>
-            <p className="text-3xl font-bold text-celo-green">42.5M</p>
-            <p className="text-xs text-slate-600 mt-1">of 100M total</p>
+      <div className="mt-8 bg-gradient-to-r from-[#1E2336] to-[#2D3348] rounded-2xl p-8 text-white">
+        <h4 className="text-lg font-bold mb-6 flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-[#35D07F]" />
+          Resumo da Distribuição
+        </h4>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="p-4 bg-white/5 rounded-xl border border-white/10">
+            <p className="text-sm text-slate-400 mb-2">Total do Fundo</p>
+            <p className="text-3xl font-bold text-[#35D07F]">9.67M</p>
+            <p className="text-xs text-slate-500 mt-1">CELO</p>
           </div>
-          <div>
-            <p className="text-sm text-slate-600 mb-1">Remaining Available</p>
-            <p className="text-3xl font-bold text-celo-gold-dark">57.5M</p>
-            <p className="text-xs text-slate-600 mt-1">for future initiatives</p>
+          <div className="p-4 bg-white/5 rounded-xl border border-white/10">
+            <p className="text-sm text-slate-400 mb-2">Total Alocado</p>
+            <p className="text-3xl font-bold text-[#FBCC5C]">{formatCelo(totalAllocated)}</p>
+            <p className="text-xs text-slate-500 mt-1">70% do total</p>
           </div>
-          <div>
-            <p className="text-sm text-slate-600 mb-1">Active Projects</p>
-            <p className="text-3xl font-bold text-slate-900">24</p>
-            <p className="text-xs text-slate-600 mt-1">currently funded</p>
+          <div className="p-4 bg-white/5 rounded-xl border border-white/10">
+            <p className="text-sm text-slate-400 mb-2">Disponível</p>
+            <p className="text-3xl font-bold text-white">2.90M</p>
+            <p className="text-xs text-slate-500 mt-1">para novas iniciativas</p>
           </div>
+          <div className="p-4 bg-white/5 rounded-xl border border-white/10">
+            <p className="text-sm text-slate-400 mb-2">Projetos Ativos</p>
+            <p className="text-3xl font-bold text-white">24</p>
+            <p className="text-xs text-slate-500 mt-1">em execução</p>
+          </div>
+        </div>
+
+        <div className="mt-6 flex flex-wrap gap-3">
+          <a
+            href="https://dune.com/superchain_eco/celo-community-treasury"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm font-medium transition-colors"
+          >
+            Dune Analytics
+            <ExternalLink className="w-3.5 h-3.5" />
+          </a>
+          <a
+            href="https://celoscan.io/address/0xD533Ca259b330c7A88f74E000a3FaEa2d63B7972"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm font-medium transition-colors"
+          >
+            Ver no CeloScan
+            <ExternalLink className="w-3.5 h-3.5" />
+          </a>
         </div>
       </div>
     </div>
-  );
+  )
 }

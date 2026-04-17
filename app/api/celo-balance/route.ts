@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server'
 import { createPublicClient, http, formatEther, fallback } from 'viem'
 import { celo } from 'viem/chains'
 
-// Celo Community Fund address
-const CELO_COMMUNITY_FUND = '0xD533Ca0630fc6e7F9B172E9b04B3047aBeb2d235'
+// Celo Community Fund address (correto conforme docs.celo.org)
+const CELO_COMMUNITY_FUND = '0xD533Ca259b330c7A88f74E000a3FaEa2d63B7972'
 
 // RPC endpoints para Celo mainnet
 const CELO_RPC_URLS = [
@@ -22,19 +22,13 @@ export async function GET() {
       transport: fallback(transports),
     })
 
-    console.log('[Celo API] Buscando saldo para:', CELO_COMMUNITY_FUND)
-
     // Buscar saldo da carteira
     const balanceWei = await client.getBalance({
       address: CELO_COMMUNITY_FUND as `0x${string}`,
     })
 
-    console.log('[Celo API] Balance Wei:', balanceWei.toString())
-
     const balanceFormatted = formatEther(balanceWei)
     const balanceNumber = Number(balanceFormatted)
-
-    console.log('[Celo API] Balance formatado:', balanceNumber)
 
     // Simulando alocação (70% alocado, 30% disponível)
     const allocatedFunds = balanceNumber * 0.7
